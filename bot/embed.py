@@ -33,7 +33,7 @@ def new_embed_command(name: str, content: str):
             )
     content_to_save = "\n".join(content.split("\\n"))
     execute_db(
-        f'INSERT INTO embed(name, content) values("{name}", "{content_to_save}")'
+        f"INSERT INTO embed(name, content) values('{name}', '{content_to_save}')"
     )
 
 
@@ -50,7 +50,7 @@ def edit_embed_command(name: str, content: str):
             f"`{name}`という名前の埋め込みメッセージが存在しません。入力ミスがないか確認してください。"
         )
     content_to_save = "\n".join(content.split("\\n"))
-    execute_db(f'UPDATE embed SET content = "{content_to_save}" WHERE name = "{name}"')
+    execute_db(f"UPDATE embed SET content = '{content_to_save}' WHERE name = '{name}'")
 
 
 def delete_embed_command(name: str):
@@ -65,7 +65,7 @@ def delete_embed_command(name: str):
         raise Exception(
             f"`{name}`という名前の埋め込みメッセージが存在しません。入力ミスがないか確認してください。"
         )
-    execute_db(f'DELETE FROM embed WHERE name = "{name}"')
+    execute_db(f"DELETE FROM embed WHERE name = '{name}'")
 
 
 def embed_list_command():

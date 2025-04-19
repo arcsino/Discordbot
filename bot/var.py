@@ -30,7 +30,7 @@ def new_var_command(name: str, content: str):
             raise Exception(
                 f"既に`{name}`という名前の変数が存在します。別の名前で新規作成するか、既存の変数を削除してください。"
             )
-    execute_db(f'INSERT INTO var(name, content) values("{name}", "{content}")')
+    execute_db(f"INSERT INTO var(name, content) values('{name}', '{content}')")
 
 
 def edit_var_command(name: str, content: str):
@@ -45,7 +45,7 @@ def edit_var_command(name: str, content: str):
         raise Exception(
             f"`{name}`という名前の変数が存在しません。入力ミスがないか確認してください。"
         )
-    execute_db(f'UPDATE var SET content = "{content}" WHERE name = "{name}"')
+    execute_db(f"UPDATE var SET content = '{content}' WHERE name = '{name}'")
 
 
 def delete_var_command(name: str):
@@ -60,7 +60,7 @@ def delete_var_command(name: str):
         raise Exception(
             f"`{name}`という名前の変数が存在しません。入力ミスがないか確認してください。"
         )
-    execute_db(f'DELETE FROM var WHERE name = "{name}"')
+    execute_db(f"DELETE FROM var WHERE name = '{name}'")
 
 
 def var_list_command():
