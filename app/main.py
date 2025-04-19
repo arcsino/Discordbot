@@ -39,8 +39,7 @@ class MyClient(discord.Client):
 
     async def setup_hook(self):
         # self.tree.copy_global_to(guild=MY_GUILD)  # 開発環境ではコメント解除
-        # await self.tree.sync(guild=MY_GUILD)  # 開発環境ではコメント解除
-        await self.tree.sync()  # 開発環境ではコメント
+        await self.tree.sync(guild=MY_GUILD)
 
 
 intents = discord.Intents.default()
