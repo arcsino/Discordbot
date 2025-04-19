@@ -10,8 +10,7 @@ from embed import (
     send_embed_command,
 )
 from var import new_var_command, edit_var_command, delete_var_command, var_list_command
-
-# from server import server_thread  # 本番環境でコメント解除解除
+from server import server_thread  # 開発環境でコメント
 
 
 # 環境変数の読み込み
@@ -39,7 +38,7 @@ class MyClient(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
-        self.tree.copy_global_to(guild=MY_GUILD)  # 本番環境ではコメント
+        # self.tree.copy_global_to(guild=MY_GUILD)  # 開発環境ではコメント解除
         await self.tree.sync(guild=MY_GUILD)
 
 
@@ -256,5 +255,5 @@ async def varlist(interaction: discord.Interaction):
 
 
 # Koyeb用 サーバー立ち上げ
-# server_thread()　# 本番環境ではコメント解除
+server_thread()  # 開発環境ではコメント
 client.run(TOKEN)
