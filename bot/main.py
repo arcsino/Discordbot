@@ -11,7 +11,6 @@ from embed import (
     send_embed_command,
 )
 from var import new_var_command, edit_var_command, delete_var_command, var_list_command
-from server import server_thread  # 本番環境
 
 
 # 環境変数の読み込み
@@ -299,6 +298,5 @@ async def attachdb(interaction: discord.Interaction):
         logger.error("Failed to send dbfile")
 
 
-# Koyeb用 サーバー立ち上げ
-server_thread()  # 本番環境
+# ボットの起動
 client.run(TOKEN)
