@@ -1,4 +1,5 @@
 import os, discord
+from pathlib import Path
 from discord import app_commands
 from dotenv import load_dotenv
 from logging import getLogger, FileHandler, INFO, Formatter
@@ -10,7 +11,7 @@ from embed import (
     send_embed_command,
 )
 from var import new_var_command, edit_var_command, delete_var_command, var_list_command
-from server import server_thread  # 開発環境でコメント
+from server import server_thread  # 本番環境
 
 
 # 環境変数の読み込み
@@ -20,7 +21,7 @@ load_dotenv()
 # ロガー設定
 logger = getLogger(__name__)
 logger.setLevel(INFO)
-f_handler = FileHandler("./app/app.log")
+f_handler = FileHandler("./bot.log")
 f_handler.setLevel(INFO)
 formatter = Formatter("%(asctime)s - %(levelname)s in %(funcName)s : %(message)s")
 f_handler.setFormatter(formatter)
@@ -38,8 +39,8 @@ class MyClient(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
-        # self.tree.copy_global_to(guild=discord.Object(id=MY_GUILD))  # 開発環境ではコメント解除
-        await self.tree.sync()
+        # self.tree.copy_global_to(guild=discord.Object(id=MY_GUILD))  # 開発環境
+        await self.tree.sync(guild=discord.Object(id=MY_GUILD))
 
 
 intents = discord.Intents.default()
@@ -59,7 +60,7 @@ async def on_ready():
     content="新規作成する埋め込みメッセージの内容を入力してください。",
 )
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def newembed(interaction: discord.Interaction, name: str, content: str):
     """埋め込みメッセージを新規作成します。"""
     try:
@@ -81,7 +82,7 @@ async def newembed(interaction: discord.Interaction, name: str, content: str):
     content="編集後の埋め込みメッセージの内容を入力してください。",
 )
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def editembed(interaction: discord.Interaction, name: str, content: str):
     """既存の埋め込みメッセージを編集します。"""
     try:
@@ -100,7 +101,7 @@ async def editembed(interaction: discord.Interaction, name: str, content: str):
 @app_commands.rename(name="名前")
 @app_commands.describe(name="削除する埋め込みメッセージの名前を入力してください。")
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def deleteembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージを削除します。"""
     try:
@@ -117,7 +118,7 @@ async def deleteembed(interaction: discord.Interaction, name: str):
 # 埋め込みメッセージリストコマンド
 @client.tree.command()
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def embedlist(interaction: discord.Interaction):
     """既存の埋め込みメッセージのリストを表示します。"""
     try:
@@ -137,7 +138,7 @@ async def embedlist(interaction: discord.Interaction):
 @app_commands.rename(name="名前")
 @app_commands.describe(name="送信する埋め込みメッセージの名前を入力してください。")
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def sendembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージを送信します。"""
     try:
@@ -162,7 +163,7 @@ async def sendembed(interaction: discord.Interaction, name: str):
 @app_commands.rename(name="名前")
 @app_commands.describe(name="プレ送信する埋め込みメッセージの名前を入力してください。")
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def presendembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージをプレ送信します。"""
     try:
@@ -191,7 +192,7 @@ async def presendembed(interaction: discord.Interaction, name: str):
     content="新規作成する変数の内容を入力してください。",
 )
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def newvar(interaction: discord.Interaction, name: str, content: str):
     """変数を新規作成します。"""
     try:
@@ -213,7 +214,7 @@ async def newvar(interaction: discord.Interaction, name: str, content: str):
     content="編集後の変数の内容を入力してください。",
 )
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def editvar(interaction: discord.Interaction, name: str, content: str):
     """既存の変数を編集します。"""
     try:
@@ -232,7 +233,7 @@ async def editvar(interaction: discord.Interaction, name: str, content: str):
 @app_commands.rename(name="名前")
 @app_commands.describe(name="削除する変数の名前を入力してください。")
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def deletevar(interaction: discord.Interaction, name: str):
     """既存の変数を削除します。"""
     try:
@@ -249,7 +250,7 @@ async def deletevar(interaction: discord.Interaction, name: str):
 # 変数リストコマンド
 @client.tree.command()
 @app_commands.default_permissions(administrator=True)
-@discord.app_commands.guilds(MY_GUILD)
+@discord.app_commands.guilds(int(MY_GUILD))
 async def varlist(interaction: discord.Interaction):
     """既存の変数のリストを表示します。"""
     try:
@@ -264,6 +265,40 @@ async def varlist(interaction: discord.Interaction):
         logger.error("Failed to send Var list")
 
 
+# ログファイル送信
+@client.tree.command()
+@app_commands.default_permissions(administrator=True)
+@discord.app_commands.guilds(int(MY_GUILD))
+async def attachlog(interaction: discord.Interaction):
+    """ボットのログファイルを送信します。"""
+    try:
+        await interaction.response.send_message(
+            f"ログファイルです。",
+            file=discord.File(Path("./bot.log")),
+            ephemeral=True,
+        )
+    except Exception as e:
+        await interaction.response.send_message(f"[Error]:{e}", ephemeral=True)
+        logger.error("Failed to send logfile")
+
+
+# データベースファイル送信
+@client.tree.command()
+@app_commands.default_permissions(administrator=True)
+@discord.app_commands.guilds(int(MY_GUILD))
+async def attachdb(interaction: discord.Interaction):
+    """データベースファイルを送信します。"""
+    try:
+        await interaction.response.send_message(
+            f"データベースファイルです。",
+            file=discord.File(Path("./database.db")),
+            ephemeral=True,
+        )
+    except Exception as e:
+        await interaction.response.send_message(f"[Error]:{e}", ephemeral=True)
+        logger.error("Failed to send dbfile")
+
+
 # Koyeb用 サーバー立ち上げ
-server_thread()  # 開発環境ではコメント
+server_thread()  # 本番環境
 client.run(TOKEN)

@@ -1,6 +1,6 @@
 import sqlite3
 
-dbname = "./app/global.db"
+dbname = "./database.db"
 conn = sqlite3.connect(dbname)
 cur = conn.cursor()
 cur.execute(

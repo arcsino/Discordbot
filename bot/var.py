@@ -2,7 +2,7 @@ import sqlite3
 
 
 def get_var_list():
-    dbname = "./app/global.db"
+    dbname = "./database.db"
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
     cur.execute("SELECT * FROM var")
@@ -13,7 +13,7 @@ def get_var_list():
 
 
 def execute_db(command: str):
-    dbname = "./app/global.db"
+    dbname = "./database.db"
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
     cur.execute(command)

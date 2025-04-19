@@ -3,7 +3,7 @@ from var import get_var_list
 
 
 def get_embed_list():
-    dbname = "./app/global.db"
+    dbname = "./database.db"
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
     cur.execute("SELECT * FROM embed")
@@ -14,7 +14,7 @@ def get_embed_list():
 
 
 def execute_db(command: str):
-    dbname = "./app/global.db"
+    dbname = "./database.db"
     conn = sqlite3.connect(dbname)
     cur = conn.cursor()
     cur.execute(command)
