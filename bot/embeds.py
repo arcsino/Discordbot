@@ -66,6 +66,8 @@ def send_embed_command(name: str):
             )
         v_list = get_var_list()
         content_to_send = embed[0].content
-        for v in v_list:
-            content_to_send = content_to_send.replace(f"%({v.name})s", f"{v.content}")
+        for var in v_list:
+            content_to_send = content_to_send.replace(
+                f"%({var.name})s", f"{var.content}"
+            )
         return content_to_send
