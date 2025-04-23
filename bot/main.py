@@ -3,14 +3,8 @@ from pathlib import Path
 from discord import app_commands
 from dotenv import load_dotenv
 from logging import getLogger, FileHandler, INFO, Formatter
-from embed import (
-    new_embed_command,
-    edit_embed_command,
-    delete_embed_command,
-    embed_list_command,
-    send_embed_command,
-)
-from var import new_var_command, edit_var_command, delete_var_command, var_list_command
+
+import embeds, vars
 
 
 # 環境変数の読み込み
@@ -63,7 +57,7 @@ async def on_ready():
 async def newembed(interaction: discord.Interaction, name: str, content: str):
     """埋め込みメッセージを新規作成します。"""
     try:
-        new_embed_command(name, content)
+        embeds.new_embed_command(name, content)
         await interaction.response.send_message(
             f"埋め込みメッセージを`{name}`として新規作成しました。", ephemeral=True
         )
@@ -85,7 +79,7 @@ async def newembed(interaction: discord.Interaction, name: str, content: str):
 async def editembed(interaction: discord.Interaction, name: str, content: str):
     """既存の埋め込みメッセージを編集します。"""
     try:
-        edit_embed_command(name, content)
+        embeds.edit_embed_command(name, content)
         await interaction.response.send_message(
             f"埋め込みメッセージ`{name}`を編集しました。", ephemeral=True
         )
@@ -104,7 +98,7 @@ async def editembed(interaction: discord.Interaction, name: str, content: str):
 async def deleteembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージを削除します。"""
     try:
-        delete_embed_command(name)
+        embeds.delete_embed_command(name)
         await interaction.response.send_message(
             f"埋め込みメッセージ`{name}`を削除しました。", ephemeral=True
         )
@@ -121,8 +115,8 @@ async def deleteembed(interaction: discord.Interaction, name: str):
 async def embedlist(interaction: discord.Interaction):
     """既存の埋め込みメッセージのリストを表示します。"""
     try:
-        e_list = embed_list_command()
-        text_to_send = "\n".join([f"・{embed}" for embed in e_list])
+        e_list = embeds.embed_list_command()
+        text_to_send = "\n".join([f"・{embed.name}" for embed in e_list])
         await interaction.response.send_message(
             f"埋め込みメッセージのリストは以下の通りです。\n```{text_to_send}```",
             ephemeral=True,
@@ -141,13 +135,13 @@ async def embedlist(interaction: discord.Interaction):
 async def sendembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージを送信します。"""
     try:
-        text_to_send = send_embed_command(name)
-        embed = discord.Embed(
+        content_to_send = embeds.send_embed_command(name)
+        embed_to_send = discord.Embed(
             title="",
             color=0xFF6347,
-            description=text_to_send,
+            description=content_to_send,
         )
-        await interaction.channel.send(embed=embed)
+        await interaction.channel.send(embed=embed_to_send)
         await interaction.response.send_message(
             f"埋め込みメッセージ`{name}`を送信しました。", ephemeral=True
         )
@@ -166,16 +160,16 @@ async def sendembed(interaction: discord.Interaction, name: str):
 async def presendembed(interaction: discord.Interaction, name: str):
     """既存の埋め込みメッセージをプレ送信します。"""
     try:
-        text_to_send = send_embed_command(name)
-        embed = discord.Embed(
+        content_to_send = embeds.send_embed_command(name)
+        embed_to_send = discord.Embed(
             title="",
             color=0xFF6347,
-            description=text_to_send,
+            description=content_to_send,
         )
 
         await interaction.response.send_message(
             f"埋め込みメッセージ`{name}`をプレ送信しました。",
-            embed=embed,
+            embed=embed_to_send,
             ephemeral=True,
         )
     except Exception as e:
@@ -195,7 +189,7 @@ async def presendembed(interaction: discord.Interaction, name: str):
 async def newvar(interaction: discord.Interaction, name: str, content: str):
     """変数を新規作成します。"""
     try:
-        new_var_command(name, content)
+        vars.new_var_command(name, content)
         await interaction.response.send_message(
             f"変数を`{name}`として新規作成しました。", ephemeral=True
         )
@@ -217,7 +211,7 @@ async def newvar(interaction: discord.Interaction, name: str, content: str):
 async def editvar(interaction: discord.Interaction, name: str, content: str):
     """既存の変数を編集します。"""
     try:
-        edit_var_command(name, content)
+        vars.edit_var_command(name, content)
         await interaction.response.send_message(
             f"変数`{name}`を編集しました。", ephemeral=True
         )
@@ -236,7 +230,7 @@ async def editvar(interaction: discord.Interaction, name: str, content: str):
 async def deletevar(interaction: discord.Interaction, name: str):
     """既存の変数を削除します。"""
     try:
-        delete_var_command(name)
+        vars.delete_var_command(name)
         await interaction.response.send_message(
             f"変数`{name}`を削除しました。", ephemeral=True
         )
@@ -253,8 +247,8 @@ async def deletevar(interaction: discord.Interaction, name: str):
 async def varlist(interaction: discord.Interaction):
     """既存の変数のリストを表示します。"""
     try:
-        v_list = var_list_command()
-        text_to_send = "\n".join([f"・{var[0]}" for var in v_list])
+        v_list = vars.var_list_command()
+        text_to_send = "\n".join([f"・{var.name}" for var in v_list])
         await interaction.response.send_message(
             f"変数のリストは以下の通りです。\n```{text_to_send}```",
             ephemeral=True,
@@ -290,7 +284,7 @@ async def attachdb(interaction: discord.Interaction):
     try:
         await interaction.response.send_message(
             f"データベースファイルです。",
-            file=discord.File(Path("./database.db")),
+            file=discord.File(Path("./db.sqlite3")),
             ephemeral=True,
         )
     except Exception as e:
