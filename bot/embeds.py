@@ -65,6 +65,7 @@ def send_embed_command(name: str):
                 f"`{name}`という名前の埋め込みメッセージが存在しません。入力ミスがないか確認してください。"
             )
         v_list = get_var_list()
+        content_to_send = embed[0].content
         for v in v_list:
-            content_to_send = embed[0].content.replace(f"%({v.name})s", f"{v.content}")
+            content_to_send = content_to_send.replace(f"%({v.name})s", f"{v.content}")
         return content_to_send
