@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from logging import getLogger, FileHandler, INFO, Formatter
 
 import embeds, vars
+from keep import keep_alive
 
 
 # 環境変数の読み込み
@@ -293,4 +294,8 @@ async def attachdb(interaction: discord.Interaction):
 
 
 # ボットの起動
-client.run(TOKEN)
+keep_alive()
+try:
+    client.run(TOKEN)
+except:
+    os.system("kill")
